@@ -22,6 +22,13 @@ const QueueManager = ({ token, receptionistId }) => {
   // Undo notification state
   const [showUndoToast, setShowUndoToast] = useState(false);
   const [undoTimeout, setUndoTimeout] = useState(null);
+  const [timeTick, setTimeTick] = useState(Date.now());
+
+  // Periodically refresh wait calculations (every 10 seconds)
+  useEffect(() => {
+    const timer = setInterval(() => setTimeTick(Date.now()), 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Fetch doctors list on mount
   useEffect(() => {
@@ -340,7 +347,14 @@ const QueueManager = ({ token, receptionistId }) => {
                 <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
                   {queueState?.waitingList?.length > 0 ? (
                     queueState.waitingList.map((patient, index) => {
-                      const estWait = index * queueState.avgConsultTime;
+                      // Calculate real-time estimated wait time subtracting elapsed time of active patient
+                      let estWait = index * (queueState.avgConsultTime || 5);
+                      if (queueState.activePatient?.calledAt) {
+                        const calledTime = new Date(queueState.activePatient.calledAt).getTime();
+                        const elapsedMinutes = (Date.now() - calledTime) / 60000;
+                        const remainingActiveTime = Math.max(0, (queueState.avgConsultTime || 5) - elapsedMinutes);
+                        estWait = Math.round(remainingActiveTime + index * (queueState.avgConsultTime || 5));
+                      }
                       return (
                         <tr key={patient.id} className="hover:bg-slate-50/50 transition">
                           <td className="p-4 font-bold text-purple-600">#{patient.token}</td>

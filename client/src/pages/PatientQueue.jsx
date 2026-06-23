@@ -140,11 +140,16 @@ const PatientQueue = () => {
           {/* Subtle Glow */}
           <div className="absolute -top-12 -left-12 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl"></div>
 
-          <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-wider">Currently Serving</span>
+          <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-wider">Now Hosting</span>
           {queueData.nowServing ? (
-            <h2 className="text-6xl font-extrabold text-slate-900 tracking-tight mt-2 animate-pulse">
-              Token #{queueData.nowServing}
-            </h2>
+            <div className="space-y-1 mt-2">
+              <h2 className="text-6xl font-extrabold text-slate-900 tracking-tight animate-pulse">
+                Token #{queueData.nowServing}
+              </h2>
+              {queueData.activePatient?.name && (
+                <p className="text-sm font-bold text-slate-700 capitalize mt-1">({queueData.activePatient.name})</p>
+              )}
+            </div>
           ) : (
             <h2 className="text-4xl font-extrabold text-slate-400 tracking-tight mt-2">
               --
@@ -191,24 +196,48 @@ const PatientQueue = () => {
 
         {/* Waiting List Visual */}
         <div className="p-6 rounded-2xl border glass-panel space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Tokens Queue Sequence</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Queue Sequence</h3>
+            <span className="text-[10px] text-slate-400 font-semibold">{queueData.waitingList?.length || 0} waiting</span>
+          </div>
           
-          <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
             {queueData.waitingList && queueData.waitingList.length > 0 ? (
-              queueData.waitingList.map((item) => (
-                <div 
-                  key={item.token}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition duration-300 ${
-                    Number(selectedMyToken) === item.token 
-                      ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
-                      : item.isPriority 
-                        ? 'bg-purple-50 border-purple-100 text-purple-700' 
-                        : 'bg-slate-50 border-slate-100 text-slate-700'
-                  }`}
-                >
-                  #{item.token}
-                </div>
-              ))
+              queueData.waitingList.map((item) => {
+                const isSelected = Number(selectedMyToken) === item.token;
+                return (
+                  <div 
+                    key={item.token}
+                    className={`flex items-center justify-between p-3 rounded-xl border text-xs transition duration-300 ${
+                      isSelected 
+                        ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
+                        : item.isPriority 
+                          ? 'bg-purple-50/80 border-purple-100 text-purple-950' 
+                          : 'bg-slate-50/80 border-slate-100 text-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-xs ${
+                        isSelected 
+                          ? 'bg-white/20 text-white' 
+                          : item.isPriority 
+                            ? 'bg-purple-600 text-white' 
+                            : 'bg-slate-200 text-slate-700'
+                      }`}>
+                        #{item.token}
+                      </span>
+                      <span className="font-bold">{item.name}</span>
+                    </div>
+                    {item.isPriority && (
+                      <span className={`px-2 py-0.5 text-[8px] font-bold rounded uppercase tracking-wider ${
+                        isSelected ? 'bg-white/25 text-white' : 'bg-purple-100 text-purple-700'
+                      }`}>
+                        Priority
+                      </span>
+                    )}
+                  </div>
+                );
+              })
             ) : (
               <p className="text-xs text-slate-400 py-2">Queue is empty right now.</p>
             )}

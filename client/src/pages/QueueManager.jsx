@@ -304,7 +304,7 @@ const QueueManager = ({ token, receptionistId }) => {
           {/* Active Serving Panel */}
           <div className="p-6 rounded-2xl border glass-panel relative overflow-hidden">
             {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>

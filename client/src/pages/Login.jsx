@@ -144,15 +144,7 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Hint */}
-          <div className="pt-6 border-t border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 leading-relaxed uppercase tracking-widest flex items-center justify-center gap-1 font-bold">
-              <Sparkles className="w-3.5 h-3.5 text-yellow-500" /> Seeding Credentials Hint
-            </p>
-            <p className="text-xs text-slate-600 mt-1.5 font-bold bg-slate-50 py-2 px-3 rounded-lg inline-block border border-slate-100">
-              receptionist@queuecure.com / password123
-            </p>
-          </div>
+          {/* Demo Hint Removed */}
 
         </div>
       </div>
@@ -161,6 +153,10 @@ const Login = () => {
       <div className="hidden lg:flex w-1/2 bg-slate-50 border-l border-slate-100 relative overflow-hidden items-center justify-center p-12">
         {/* Subtle grid layout is built into global body, but we can overlay here too */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        
+        {/* Animated Background blobs */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float-slow pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-float-delay pointer-events-none"></div>
         
         <div className="max-w-xl w-full text-center space-y-12 relative z-10">
           {/* Large Logo */}
@@ -191,10 +187,6 @@ const Login = () => {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-bold tracking-widest uppercase">
-            <Activity className="w-4 h-4 text-blue-600 animate-pulse" />
-            <span>State Synchronized Portal</span>
-          </div>
         </div>
       </div>
     </div>

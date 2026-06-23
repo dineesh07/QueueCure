@@ -156,11 +156,16 @@ const PublicDisplay = () => {
 
               {/* Currently Serving Display */}
               <div className="bg-slate-50 rounded-xl p-5 border border-slate-100 text-center mb-6">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Now Serving</span>
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Now Hosting</span>
                 {currentServing ? (
-                  <h3 className="text-5xl font-black text-emerald-600 tracking-tight mt-1 animate-pulse">
-                    Token #{currentServing}
-                  </h3>
+                  <div className="space-y-1 mt-1">
+                    <h3 className="text-5xl font-black text-emerald-600 tracking-tight animate-pulse">
+                      Token #{currentServing}
+                    </h3>
+                    {qData.activePatient?.name && (
+                      <p className="text-sm font-bold text-slate-700 capitalize mt-1">{qData.activePatient.name}</p>
+                    )}
+                  </div>
                 ) : (
                   <h3 className="text-3xl font-extrabold text-slate-400 mt-2">--</h3>
                 )}
@@ -169,21 +174,36 @@ const PublicDisplay = () => {
 
               {/* Next Waiting List Display */}
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-slate-400" /> Next in Queue
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5 justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-slate-400" /> Next in Queue
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-semibold">{waitingList.length} waiting</span>
                 </h4>
                 {waitingList.length > 0 ? (
-                  <div className="grid grid-cols-4 gap-2">
-                    {waitingList.slice(0, 8).map((patient) => (
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {waitingList.slice(0, 5).map((patient) => (
                       <div
                         key={patient.token}
-                        className={`py-2 text-center rounded-lg text-xs font-black border ${
+                        className={`flex items-center justify-between p-2.5 rounded-xl border text-xs transition duration-300 ${
                           patient.isPriority
-                            ? 'bg-purple-50 border-purple-100 text-purple-700'
-                            : 'bg-slate-50 border-slate-100 text-slate-700'
+                            ? 'bg-purple-50/80 border-purple-100 text-purple-950'
+                            : 'bg-slate-50/80 border-slate-100 text-slate-800'
                         }`}
                       >
-                        #{patient.token}
+                        <div className="flex items-center gap-2.5">
+                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-extrabold text-[11px] ${
+                            patient.isPriority ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'
+                          }`}>
+                            #{patient.token}
+                          </span>
+                          <span className="font-bold">{patient.name}</span>
+                        </div>
+                        {patient.isPriority && (
+                          <span className="px-1.5 py-0.5 text-[8px] font-bold rounded bg-purple-100 text-purple-700 uppercase tracking-wider">
+                            Priority
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>

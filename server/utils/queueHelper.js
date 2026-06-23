@@ -37,6 +37,7 @@ export const getQueueState = async (doctorId) => {
   // Sanitized list for public/patient dashboard
   const waitingListSanitized = waitingPatients.map(p => ({
     token: p.token,
+    name: p.name,
     isPriority: p.isPriority
   }));
 
@@ -68,6 +69,7 @@ export const getQueueState = async (doctorId) => {
       doctorName: doctor.name,
       room: doctor.room,
       nowServing,
+      activePatient: activePatientDetails,
       waitingList: waitingListSanitized,
       avgConsultTime: Number(realAvg.toFixed(1)),
       totalWaiting: waitingPatients.length

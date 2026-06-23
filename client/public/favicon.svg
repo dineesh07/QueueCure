@@ -1,0 +1,8 @@
+<svg viewBox="0 0 380 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M 100 100 C 85 88 81 76 81 64 L 90 64 L 100 79 L 110 64 L 119 64 C 119 76 115 88 100 100 Z" fill="#0056b3" />
+  <path d="M 100 100 C 85 112 81 124 81 136 L 90 136 L 100 121 L 110 136 L 119 136 C 119 124 115 112 100 100 Z" fill="#0056b3" />
+  <path d="M 100 100 C 88 85 76 81 64 81 L 64 90 L 79 100 L 64 110 L 64 119 C 76 119 88 115 100 100 Z" fill="#0056b3" />
+  <path d="M 100 100 C 112 85 124 81 136 81 L 136 90 L 121 100 L 136 110 L 136 119 C 124 119 112 115 100 100 Z" fill="#0056b3" />
+  <path d="M 35 135 C 65 135 85 112 107 98 C 129 84 145 80 160 80" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" fill="none" />
+  <text x="180" y="125" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="72" fill="#0056b3" letter-spacing="-2">CMC</text>
+</svg>

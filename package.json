@@ -1,0 +1,10 @@
+{
+  "name": "queue-cure",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev": "npx concurrently --kill-others \"npm run dev:server\" \"npm run dev:client\""
+  }
+}

@@ -3,9 +3,7 @@ import Doctor from '../models/Doctor.js';
 import { getQueueState } from '../utils/queueHelper.js';
 import { sendWhatsApp } from '../utils/whatsapp.js';
 
-// In-memory logs for 90s auto-skip timers
-const activeTimers = {};
-const timerStartTimes = {};
+// Timers disabled to allow manual flow only
 
 // In-memory store for Undo feature (5 second window)
 const lastActions = {}; // doctorId -> { action, patientId, extraData, timestamp }
@@ -154,35 +152,7 @@ export default function registerQueueHandlers(io, socket) {
       nextPatient.calledAt = new Date();
       await nextPatient.save();
 
-      // Clear existing 90s timer if any
-      if (activeTimers[doctorId]) {
-        clearTimeout(activeTimers[doctorId]);
-      }
 
-      // Start 90s timer
-      timerStartTimes[doctorId] = Date.now();
-      io.to(`receptionist_${doctorId}`).emit('timer:started', { duration: 90, startedAt: timerStartTimes[doctorId] });
-
-      activeTimers[doctorId] = setTimeout(async () => {
-        try {
-          // Check if patient is still in_progress
-          const checkPatient = await Patient.findById(nextPatient._id);
-          if (checkPatient && checkPatient.status === 'in_progress') {
-            checkPatient.status = 'skipped';
-            await checkPatient.save();
-            
-            console.log(`[AUTO-SKIP] Token ${checkPatient.token} auto-skipped due to no-show.`);
-            
-            // Auto call next
-            io.to(`receptionist_${doctorId}`).emit('timer:expired', { token: checkPatient.token });
-            
-            // Trigger call next event internally
-            socket.emit('queue:call-next', { doctorId });
-          }
-        } catch (err) {
-          console.error('Error in auto-skip timer:', err);
-        }
-      }, 90000);
 
       // Store history for undo
       lastActions[doctorId] = {
@@ -209,12 +179,7 @@ export default function registerQueueHandlers(io, socket) {
       patient.status = 'skipped';
       await patient.save();
 
-      // Clear active timer
-      if (activeTimers[doctorId]) {
-        clearTimeout(activeTimers[doctorId]);
-        delete activeTimers[doctorId];
-        delete timerStartTimes[doctorId];
-      }
+
 
       // Store history for undo
       lastActions[doctorId] = {
@@ -240,12 +205,7 @@ export default function registerQueueHandlers(io, socket) {
       patient.completedAt = new Date();
       await patient.save();
 
-      // Clear active timer
-      if (activeTimers[doctorId]) {
-        clearTimeout(activeTimers[doctorId]);
-        delete activeTimers[doctorId];
-        delete timerStartTimes[doctorId];
-      }
+
 
       // Store history for undo
       lastActions[doctorId] = {
@@ -297,20 +257,6 @@ export default function registerQueueHandlers(io, socket) {
             prevPatient.status = 'in_progress';
             prevPatient.completedAt = undefined;
             await prevPatient.save();
-            
-            // Re-establish timer
-            if (activeTimers[doctorId]) {
-              clearTimeout(activeTimers[doctorId]);
-            }
-            timerStartTimes[doctorId] = Date.now();
-            io.to(`receptionist_${doctorId}`).emit('timer:started', { duration: 90, startedAt: timerStartTimes[doctorId] });
-          }
-        } else {
-          // If no previous completed patient, clear the timer
-          if (activeTimers[doctorId]) {
-            clearTimeout(activeTimers[doctorId]);
-            delete activeTimers[doctorId];
-            delete timerStartTimes[doctorId];
           }
         }
       } else if (action === 'skip') {
@@ -319,10 +265,6 @@ export default function registerQueueHandlers(io, socket) {
         if (patient) {
           patient.status = 'in_progress';
           await patient.save();
-
-          // Restore timer
-          timerStartTimes[doctorId] = Date.now();
-          io.to(`receptionist_${doctorId}`).emit('timer:started', { duration: 90, startedAt: timerStartTimes[doctorId] });
         }
       } else if (action === 'done') {
         // Revert done patient back to in_progress
@@ -331,10 +273,6 @@ export default function registerQueueHandlers(io, socket) {
           patient.status = 'in_progress';
           patient.completedAt = undefined;
           await patient.save();
-
-          // Restore timer
-          timerStartTimes[doctorId] = Date.now();
-          io.to(`receptionist_${doctorId}`).emit('timer:started', { duration: 90, startedAt: timerStartTimes[doctorId] });
         }
       } else if (action === 'complete-only') {
         // Revert done patient back to in_progress

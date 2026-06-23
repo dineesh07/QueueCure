@@ -12,6 +12,13 @@ const PatientQueue = () => {
     return localStorage.getItem(`myToken_${doctorId}`) || '';
   });
   const [loading, setLoading] = useState(true);
+  const [timeTick, setTimeTick] = useState(Date.now());
+
+  // Periodically refresh estimated wait time calculations (every 10 seconds)
+  useEffect(() => {
+    const timer = setInterval(() => setTimeTick(Date.now()), 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (!doctorId) return;
@@ -98,6 +105,12 @@ const PatientQueue = () => {
     if (index !== -1) {
       tokensAhead = index;
       estimatedWait = tokensAhead * queueData.avgConsultTime;
+      if (queueData.activePatient?.calledAt) {
+        const calledTime = new Date(queueData.activePatient.calledAt).getTime();
+        const elapsedMinutes = (Date.now() - calledTime) / 60000;
+        const remainingActiveTime = Math.max(0, queueData.avgConsultTime - elapsedMinutes);
+        estimatedWait = Math.round(remainingActiveTime + tokensAhead * queueData.avgConsultTime);
+      }
     }
   }
 
@@ -203,8 +216,18 @@ const PatientQueue = () => {
           
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
             {queueData.waitingList && queueData.waitingList.length > 0 ? (
-              queueData.waitingList.map((item) => {
+              queueData.waitingList.map((item, index) => {
                 const isSelected = Number(selectedMyToken) === item.token;
+                
+                // Calculate real-time estimated wait time subtracting elapsed time of active patient
+                let estWait = index * (queueData.avgConsultTime || 5);
+                if (queueData.activePatient?.calledAt) {
+                  const calledTime = new Date(queueData.activePatient.calledAt).getTime();
+                  const elapsedMinutes = (Date.now() - calledTime) / 60000;
+                  const remainingActiveTime = Math.max(0, (queueData.avgConsultTime || 5) - elapsedMinutes);
+                  estWait = Math.round(remainingActiveTime + index * (queueData.avgConsultTime || 5));
+                }
+
                 return (
                   <div 
                     key={item.token}
@@ -226,7 +249,12 @@ const PatientQueue = () => {
                       }`}>
                         #{item.token}
                       </span>
-                      <span className="font-bold">{item.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold">{item.name}</span>
+                        <span className={`text-[9px] font-semibold ${isSelected ? 'text-blue-200' : 'text-slate-400'}`}>
+                          Est. wait: {estWait} mins
+                        </span>
+                      </div>
                     </div>
                     {item.isPriority && (
                       <span className={`px-2 py-0.5 text-[8px] font-bold rounded uppercase tracking-wider ${

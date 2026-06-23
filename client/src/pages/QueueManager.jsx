@@ -17,10 +17,7 @@ const QueueManager = ({ token, receptionistId }) => {
   const [isPriority, setIsPriority] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // Timer State
-  const [timerSeconds, setTimerSeconds] = useState(null);
-  const [timerMax, setTimerMax] = useState(90);
-  const timerIntervalRef = useRef(null);
+
 
   // Undo notification state
   const [showUndoToast, setShowUndoToast] = useState(false);
@@ -49,7 +46,6 @@ const QueueManager = ({ token, receptionistId }) => {
 
     // Reset local queue
     setQueueState(null);
-    setTimerSeconds(null);
 
     const joinRooms = () => {
       socket.emit('join:doctor', selectedDoctorId);
@@ -88,41 +84,16 @@ const QueueManager = ({ token, receptionistId }) => {
       }
     });
 
-    socket.on('timer:started', ({ duration, startedAt }) => {
-      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-      
-      const updateTimer = () => {
-        const elapsed = (Date.now() - startedAt) / 1000;
-        const remaining = Math.max(0, duration - elapsed);
-        setTimerSeconds(Math.round(remaining));
-        setTimerMax(duration);
-
-        if (remaining <= 0) {
-          clearInterval(timerIntervalRef.current);
-          setTimerSeconds(null);
-        }
-      };
-
-      updateTimer();
-      timerIntervalRef.current = setInterval(updateTimer, 1000);
-    });
-
-    // Reset timer if done or skip clears it
+    // Listen for receptionist state updates
     socket.on('queue:receptionist-updated', (data) => {
       if (data.doctorId === selectedDoctorId) {
         setQueueState(data);
-        if (!data.activePatient) {
-          if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-          setTimerSeconds(null);
-        }
       }
     });
 
     return () => {
       socket.off('connect', joinRooms);
       socket.off('queue:receptionist-updated');
-      socket.off('timer:started');
-      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
   }, [selectedDoctorId, token]);
 
@@ -346,23 +317,7 @@ const QueueManager = ({ token, receptionistId }) => {
               </div>
             </div>
 
-            {/* Auto-Skip 90s Timer Progress Bar */}
-            {timerSeconds !== null && (
-              <div className="mt-6 space-y-2">
-                <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-amber-600 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 animate-pulse" /> No-Show Countdown
-                  </span>
-                  <span className="text-slate-600">{timerSeconds} seconds remaining</span>
-                </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
-                  <div 
-                    className="bg-amber-500 h-full rounded-full transition-all duration-1000 ease-linear"
-                    style={{ width: `${(timerSeconds / timerMax) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
+
           </div>
 
           {/* Queue List Table */}

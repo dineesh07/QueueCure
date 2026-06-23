@@ -180,32 +180,47 @@ const PublicDisplay = () => {
                   </span>
                   <span className="text-[10px] text-slate-400 font-semibold">{waitingList.length} waiting</span>
                 </h4>
-                {waitingList.length > 0 ? (
+                 {waitingList.length > 0 ? (
                   <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                    {waitingList.slice(0, 5).map((patient) => (
-                      <div
-                        key={patient.token}
-                        className={`flex items-center justify-between p-2.5 rounded-xl border text-xs transition duration-300 ${
-                          patient.isPriority
-                            ? 'bg-purple-50/80 border-purple-100 text-purple-950'
-                            : 'bg-slate-50/80 border-slate-100 text-slate-800'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-extrabold text-[11px] ${
-                            patient.isPriority ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'
-                          }`}>
-                            #{patient.token}
-                          </span>
-                          <span className="font-bold">{patient.name}</span>
+                    {waitingList.slice(0, 5).map((patient, index) => {
+                      // Calculate real-time estimated wait time subtracting elapsed time of active patient
+                      let estWait = index * (qData.avgConsultTime || 5);
+                      if (qData.activePatient?.calledAt) {
+                        const calledTime = new Date(qData.activePatient.calledAt).getTime();
+                        const elapsedMinutes = (Date.now() - calledTime) / 60000;
+                        const remainingActiveTime = Math.max(0, (qData.avgConsultTime || 5) - elapsedMinutes);
+                        estWait = Math.round(remainingActiveTime + index * (qData.avgConsultTime || 5));
+                      }
+                      return (
+                        <div
+                          key={patient.token}
+                          className={`flex items-center justify-between p-2.5 rounded-xl border text-xs transition duration-300 ${
+                            patient.isPriority
+                              ? 'bg-purple-50/80 border-purple-100 text-purple-950'
+                              : 'bg-slate-50/80 border-slate-100 text-slate-800'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-extrabold text-[11px] ${
+                              patient.isPriority ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'
+                            }`}>
+                              #{patient.token}
+                            </span>
+                            <div className="flex flex-col">
+                              <span className="font-bold">{patient.name}</span>
+                              <span className="text-[9px] text-slate-400 font-semibold">
+                                Est. wait: {estWait} mins
+                              </span>
+                            </div>
+                          </div>
+                          {patient.isPriority && (
+                            <span className="px-1.5 py-0.5 text-[8px] font-bold rounded bg-purple-100 text-purple-700 uppercase tracking-wider">
+                              Priority
+                            </span>
+                          )}
                         </div>
-                        {patient.isPriority && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-bold rounded bg-purple-100 text-purple-700 uppercase tracking-wider">
-                            Priority
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-xs text-slate-400 italic">No patients waiting</p>

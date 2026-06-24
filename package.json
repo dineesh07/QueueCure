@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "install": "npm install --prefix server",
+    "start": "node server/index.js",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "dev": "npx concurrently --kill-others \"npm run dev:server\" \"npm run dev:client\""

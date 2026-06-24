@@ -50,7 +50,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden flex bg-white text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* Left Column: Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 md:p-20 z-10 bg-white relative">
         <div className="max-w-md w-full space-y-10">
@@ -154,9 +154,7 @@ const Login = () => {
         {/* Subtle grid layout is built into global body, but we can overlay here too */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
         
-        {/* Animated Background blobs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float-slow pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-float-delay pointer-events-none"></div>
+
         
         <div className="max-w-xl w-full text-center space-y-12 relative z-10">
           {/* Large Logo */}

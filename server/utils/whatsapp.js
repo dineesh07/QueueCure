@@ -1,35 +1,44 @@
 export const sendWhatsApp = async (phone, message) => {
-  const phoneId = process.env.WA_PHONE_ID;
-  const token = process.env.WA_TOKEN;
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const fromNumber = process.env.TWILIO_WHATSAPP_FROM || 'whatsapp:+14155238886';
 
-  if (!phoneId || !token) {
-    console.log(`[MOCK WHATSAPP] To: ${phone}, Message: "${message}" (Meta Cloud API credentials missing)`);
+  if (!accountSid || !authToken) {
+    console.log(`[MOCK TWILIO] To: ${phone}, Message: "${message}" (Twilio credentials missing)`);
     return;
   }
 
+  // Format phone number to match Twilio's required format (+91XXXXXXXXXX)
+  let formattedPhone = phone;
+  if (!formattedPhone.startsWith('+')) {
+    formattedPhone = `+91${formattedPhone}`;
+  }
+
   try {
-    const url = `https://graph.facebook.com/v18.0/${phoneId}/messages`;
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+    const credentials = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+
+    const params = new URLSearchParams();
+    params.append('To', `whatsapp:${formattedPhone}`);
+    params.append('From', fromNumber);
+    params.append('Body', message);
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`,
-        type: 'text',
-        text: { body: message }
-      })
+      body: params
     });
 
     const data = await response.json();
     if (!response.ok) {
-      console.error('[WHATSAPP ERROR]', data);
+      console.error('[TWILIO ERROR]', data);
     } else {
-      console.log(`[WHATSAPP SENT] To: ${phone}, Message: "${message}"`);
+      console.log(`[TWILIO SENT] To: ${formattedPhone}, Message: "${message}"`);
     }
   } catch (error) {
-    console.error('[WHATSAPP EXCEPTION]', error);
+    console.error('[TWILIO EXCEPTION]', error);
   }
 };

@@ -65,7 +65,7 @@ const NotifyMe = ({ doctorId, waitingList }) => {
         Notify Me Near Turn
       </h3>
       <p className="text-xs text-slate-500 mb-4">
-        Enter your WhatsApp number to receive an alert when there are only 2 or fewer patients ahead of you.
+        Enter your WhatsApp number to receive an alert when there is only 1 patient ahead of you.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">

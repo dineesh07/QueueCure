@@ -27,7 +27,7 @@ router.post('/subscribe', async (req, res) => {
       .sort({ isPriority: -1, addedAt: 1 });
 
     const index = waitingList.findIndex(p => p._id.toString() === patient._id.toString());
-    if (index !== -1 && index <= 2 && !patient.notified) {
+    if (index !== -1 && index <= 1 && !patient.notified) {
       const message = `You're almost up! Token #${patient.token} — ${index} patient(s) ahead. Head to Dr. ${doctor.name}'s room (${doctor.room}).`;
       await sendWhatsApp(phone, message);
       patient.notified = true;

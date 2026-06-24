@@ -33,7 +33,7 @@ const triggerWhatsAppAlerts = async (doctorId, doctorName, room) => {
       const patient = waitingList[i];
       const tokensAhead = i; // index in sorted waiting list represents how many tokens are ahead
 
-      if (tokensAhead <= 2 && patient.phone && !patient.notified) {
+      if (tokensAhead <= 1 && patient.phone && !patient.notified) {
         const message = `You're almost up! Token #${patient.token} — ${tokensAhead} patient(s) ahead. Head to Dr. ${doctorName}'s room (${room}).`;
         await sendWhatsApp(patient.phone, message);
         

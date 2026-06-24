@@ -200,193 +200,201 @@ const QueueManager = ({ token, receptionistId }) => {
         </div>
       </div>
 
-      {/* Main Grid */}
+      {/* Top Grid: Form, QR, and Currently Serving */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left Column: Form & QR Code */}
-        <div className="space-y-6 lg:col-span-1">
+        {/* Left/Middle: Form & QR Display side-by-side */}
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Add Patient Form */}
-          <div className="p-6 rounded-2xl border glass-panel space-y-4">
-            <h3 className="text-md font-bold text-slate-800 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-purple-600" /> Add Patient
-            </h3>
-            
-            <form onSubmit={handleAddPatient} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter patient name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">WhatsApp Number (Optional)</label>
-                <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
-                  <input
-                    type="tel"
-                    placeholder="10-digit number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                    className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+          <div className="p-6 rounded-2xl border glass-panel space-y-4 flex flex-col justify-between">
+            <div>
+              <h3 className="text-md font-bold text-slate-800 flex items-center gap-2 mb-4">
+                <UserPlus className="w-5 h-5 text-purple-600" /> Add Patient
+              </h3>
+              
+              <form onSubmit={handleAddPatient} className="space-y-4">
                 <div>
-                  <span className="block text-xs font-semibold text-slate-800">Priority Token</span>
-                  <span className="block text-[10px] text-slate-500">Emergency / Senior Citizens</span>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter patient name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition"
+                    />
+                  </div>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={isPriority} 
-                    onChange={(e) => setIsPriority(e.target.checked)}
-                    className="sr-only peer" 
-                  />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                </label>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 text-white font-medium rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-              >
-                <span>Issue Ticket</span>
-              </button>
-            </form>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">WhatsApp Number (Optional)</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                    <input
+                      type="tel"
+                      placeholder="10-digit number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                      className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <div>
+                    <span className="block text-xs font-semibold text-slate-800">Priority Token</span>
+                    <span className="block text-[10px] text-slate-500">Emergency / Senior Citizens</span>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={isPriority} 
+                      onChange={(e) => setIsPriority(e.target.checked)}
+                      className="sr-only peer" 
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 text-white font-medium rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                >
+                  <span>Issue Ticket</span>
+                </button>
+              </form>
+            </div>
           </div>
 
           {/* QR Display component */}
-          {queueState && (
+          {queueState ? (
             <QRDisplay 
               doctorId={selectedDoctorId} 
               doctorName={queueState.doctorName} 
               room={queueState.room} 
             />
+          ) : (
+            <div className="p-6 rounded-2xl border border-dashed border-slate-200 flex flex-col items-center justify-center text-center text-slate-400 min-h-[300px]">
+              <p className="text-sm">Select a doctor to load the QR code</p>
+            </div>
           )}
         </div>
 
-        {/* Right Column: Queue Manager Panel */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Active Serving Panel */}
-          <div className="p-6 rounded-2xl border glass-panel relative overflow-hidden">
+        {/* Right Column: Currently Serving Panel */}
+        <div className="lg:col-span-1">
+          <div className="p-6 rounded-2xl border glass-panel relative overflow-hidden h-full flex flex-col justify-between min-h-[320px]">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">Currently Serving</span>
-                {queueState?.activePatient ? (
-                  <h3 className="text-3xl font-extrabold text-slate-800 mt-1">
+            <div className="space-y-4">
+              <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">Currently Serving</span>
+              {queueState?.activePatient ? (
+                <div className="space-y-2">
+                  <h3 className="text-4xl font-extrabold text-slate-800 mt-1">
                     Token #{queueState.activePatient.token} 
-                    <span className="text-lg font-normal text-slate-500 ml-3">({queueState.activePatient.name})</span>
                   </h3>
-                ) : (
-                  <h3 className="text-2xl font-bold text-slate-400 mt-1">No Active Consultations</h3>
-                )}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleCallNext}
-                  className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm transition flex items-center gap-2 cursor-pointer shadow-lg shadow-purple-500/10"
-                >
-                  <Play className="w-4 h-4 fill-current" /> Call Next Patient
-                </button>
-                
-                {queueState?.activePatient && (
-                  <>
-                    <button
-                      onClick={() => handleSkip(queueState.activePatient.id)}
-                      className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold rounded-xl border border-rose-200 text-sm transition flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <AlertCircle className="w-4 h-4" /> Skip
-                    </button>
-                    <button
-                      onClick={() => handleDone(queueState.activePatient.id)}
-                      className="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold rounded-xl border border-emerald-200 text-sm transition flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <CheckCircle className="w-4 h-4" /> Done
-                    </button>
-                  </>
-                )}
-              </div>
+                  <p className="text-md font-semibold text-slate-500">
+                    Patient: <span className="text-slate-800 font-bold">{queueState.activePatient.name}</span>
+                  </p>
+                </div>
+              ) : (
+                <h3 className="text-2xl font-bold text-slate-400 mt-1">No Active Consultations</h3>
+              )}
             </div>
 
-
+            <div className="flex flex-col gap-2.5 mt-6 z-10">
+              <button
+                onClick={handleCallNext}
+                className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-purple-500/10"
+              >
+                <Play className="w-4 h-4 fill-current" /> Call Next Patient
+              </button>
+              
+              {queueState?.activePatient && (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleSkip(queueState.activePatient.id)}
+                    className="py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold rounded-xl border border-rose-200 text-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <AlertCircle className="w-4 h-4" /> Skip
+                  </button>
+                  <button
+                    onClick={() => handleDone(queueState.activePatient.id)}
+                    className="py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold rounded-xl border border-emerald-200 text-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <CheckCircle className="w-4 h-4" /> Done
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Queue List Table */}
-          <div className="p-6 rounded-2xl border glass-panel space-y-4">
-            <h3 className="text-md font-bold text-slate-800 flex items-center gap-2">
-              Waiting Queue List ({queueState?.waitingList?.length || 0} Patients)
-            </h3>
+      </div>
 
-            <div className="overflow-x-auto rounded-xl border border-slate-100">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-slate-600 text-xs font-bold uppercase border-b border-slate-100">
-                    <th className="p-4">Token</th>
-                    <th className="p-4">Name</th>
-                    <th className="p-4">Priority</th>
-                    <th className="p-4">Wait Time</th>
-                    <th className="p-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
-                  {queueState?.waitingList?.length > 0 ? (
-                    queueState.waitingList.map((patient, index) => {
-                      // Calculate real-time estimated wait time subtracting elapsed time of active patient
-                      let estWait = index * (queueState.avgConsultTime || 5);
-                      if (queueState.activePatient?.calledAt) {
-                        const calledTime = new Date(queueState.activePatient.calledAt).getTime();
-                        const elapsedMinutes = (Date.now() - calledTime) / 60000;
-                        const remainingActiveTime = Math.max(0, (queueState.avgConsultTime || 5) - elapsedMinutes);
-                        estWait = Math.round(remainingActiveTime + index * (queueState.avgConsultTime || 5));
-                      }
-                      return (
-                        <tr key={patient.id} className="hover:bg-slate-50/50 transition">
-                          <td className="p-4 font-bold text-purple-600">#{patient.token}</td>
-                          <td className="p-4 font-semibold text-slate-800">{patient.name}</td>
-                          <td className="p-4">
-                            {patient.isPriority ? (
-                              <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-purple-50 text-purple-600 border border-purple-100">
-                                Priority
-                              </span>
-                            ) : (
-                              <span className="text-slate-400">-</span>
-                            )}
-                          </td>
-                          <td className="p-4 text-slate-600 font-semibold">{estWait} mins</td>
-                          <td className="p-4 capitalize">
-                            <span className="px-2 py-0.5 text-xs rounded bg-amber-50 text-amber-600 border border-amber-100">
-                              {patient.status}
+      {/* Bottom Section: Queue List Table */}
+      <div className="w-full">
+        <div className="p-6 rounded-2xl border glass-panel space-y-4">
+          <h3 className="text-md font-bold text-slate-800 flex items-center gap-2">
+            Waiting Queue List ({queueState?.waitingList?.length || 0} Patients)
+          </h3>
+
+          <div className="overflow-x-auto rounded-xl border border-slate-100">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 text-slate-600 text-xs font-bold uppercase border-b border-slate-100">
+                  <th className="p-4">Token</th>
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Priority</th>
+                  <th className="p-4">Wait Time</th>
+                  <th className="p-4">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+                {queueState?.waitingList?.length > 0 ? (
+                  queueState.waitingList.map((patient, index) => {
+                    // Calculate real-time estimated wait time subtracting elapsed time of active patient
+                    let estWait = index * (queueState.avgConsultTime || 5);
+                    if (queueState.activePatient?.calledAt) {
+                      const calledTime = new Date(queueState.activePatient.calledAt).getTime();
+                      const elapsedMinutes = (Date.now() - calledTime) / 60000;
+                      const remainingActiveTime = Math.max(0, (queueState.avgConsultTime || 5) - elapsedMinutes);
+                      estWait = Math.round(remainingActiveTime + index * (queueState.avgConsultTime || 5));
+                    }
+                    return (
+                      <tr key={patient.id} className="hover:bg-slate-50/50 transition">
+                        <td className="p-4 font-bold text-purple-600">#{patient.token}</td>
+                        <td className="p-4 font-semibold text-slate-800">{patient.name}</td>
+                        <td className="p-4">
+                          {patient.isPriority ? (
+                            <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-purple-50 text-purple-600 border border-purple-100">
+                              Priority
                             </span>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="p-8 text-center text-slate-400 font-medium">
-                        No patients waiting in queue.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
+                        <td className="p-4 text-slate-600 font-semibold">{estWait} mins</td>
+                        <td className="p-4 capitalize">
+                          <span className="px-2 py-0.5 text-xs rounded bg-amber-50 text-amber-600 border border-amber-100">
+                            {patient.status}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-slate-400 font-medium">
+                      No patients waiting in queue.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

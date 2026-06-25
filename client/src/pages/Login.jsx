@@ -144,7 +144,37 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Hint Removed */}
+          {/* Quick Demo Credentials */}
+          <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 mt-6">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              Demo Accounts for Judges (Tap to auto-fill)
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('meena@cmc.com');
+                  setPassword('pass123');
+                }}
+                className="flex flex-col items-start p-3 bg-white hover:bg-slate-50 hover:border-slate-300 border border-slate-200/80 rounded-xl text-left transition cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <span className="text-xs font-bold text-slate-900">Meena (Receptionist)</span>
+                <span className="text-[10px] text-slate-500 mt-0.5">meena@cmc.com</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('deepa@cmc.com');
+                  setPassword('pass123');
+                }}
+                className="flex flex-col items-start p-3 bg-white hover:bg-slate-50 hover:border-slate-300 border border-slate-200/80 rounded-xl text-left transition cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <span className="text-xs font-bold text-slate-900">Deepa (Receptionist)</span>
+                <span className="text-[10px] text-slate-500 mt-0.5">deepa@cmc.com</span>
+              </button>
+            </div>
+          </div>
 
         </div>
       </div>
